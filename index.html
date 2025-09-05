@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 flex items-center justify-center h-screen">
+  <div class="w-full max-w-md">
+    <form id="textForm" class="bg-gray-800 rounded-2xl shadow-lg p-6">
+      <input 
+        id="textInput" 
+        type="text" 
+        placeholder="Type something..." 
+        class="w-full px-4 py-3 text-lg rounded-xl bg-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+        autofocus
+      >
+      <p id="status" class="text-gray-400 mt-3 text-sm"></p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("textForm");
+    const input = document.getElementById("textInput");
+    const statusEl = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const content = input.value.trim();
+      if (!content) return;
+
+      statusEl.textContent = "Sending...";
+
+      try {
+        const res = await fetch("https://discord.com/api/webhooks/1412179616797298699/BXeBCgVXD8Fzbwgz4lmE8DaxWeuivj4u5nU885VJdp9nc0hK4caxZYM2DaXO79BwbBqW", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content })
+        });
+
+        if (res.ok) {
+          statusEl.textContent = "✅ Sent!";
+          input.value = "";
+        } else {
+          statusEl.textContent = "❌ Failed to send.";
+        }
+      } catch (err) {
+        statusEl.textContent = "⚠️ Error sending.";
+      }
+    });
+
+    // Autofocus input box when page loads
+    window.onload = () => {
+      input.focus();
+    };
+  </script>
+</body>
+</html>
